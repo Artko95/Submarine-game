@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="subs.js"></script>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style type="text/css">
+
+        td {
+            height: 20px;
+            width: 20px;
+            background-color: yellow;
+            
+        }
+        .sub {
+            background-color: black
+        }
+        #Container{
+            float:left;
+        }
+        #DivCompplayed{
+            width:50%;}
+        #DivHumanplayed {
+            width: 50%;}
+    </style>
+</head>
+
+<body>
+    <p>Widht (Minimum 5) <input type="text" id="WidhtTxt" value="15" /></p> <p>Height (Minimum 5)<input type="text" id="HeightTxt" value="15" /> <br /></p>
+    <input type="button" value="Run" onclick="CreateGame();CompBoard()" />
+    <input type="button" value="Cheat" onclick="Cheat()" />
+    <div id="DivHumanplayed"></div>
+    <div id="DivCompplayed"></div>
+
+    <div id="Container">
+        <div id="ph"></div>  <div id="ph2"></div>
+    </div>
+
+
+    <script src="subs.js"></script>
+    <script>
+        let height;
+        let width;
+
+        allships = [];
+        allshipsComp = [];
+        allredShips = [];
+        allredShipsComp = [];
+        counter = 1;
+        PlayedHuman = 0;
+        PlayedComp = 0;
+
+        function CheckShip(idInput) {
+            counter = 0;
+            PlayedComp++;
+            strHuman = "Computer played :" + PlayedComp + " ";
+            document.getElementById("DivCompplayed").innerHTML = strHuman;
+
+            for (var i = 0; i < allships.length; i++) {
+                for (var j = 0; j < allships[i].length; j++) {
+                    if (allships[i][j] == idInput) {
+                        allredShips[allredShips.length] = idInput;
+                        document.getElementById(idInput).style.backgroundColor = "red";
+
+                        for (var q = 0; q < allships[i].length; q++) {
+                            for (var w = 0; w < allredShips.length; w++) {
+                                if (allships[i][q] == allredShips[w]) {
+                                    counter++;
+                                    if (counter == allships[i].length) {
+                                        alert("Ship has been destroyed")
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+            document.getElementById(idInput).style.backgroundColor = "Grey";
+        }
+        function CreateGame() {
+            allships = [];
+            allredShips = [];
+            counter = 1;
+            height = Number(document.getElementById("HeightTxt").value);
+            width = Number(document.getElementById("WidhtTxt").value);
+            TotdalTd = height * width;
+            PlayedHuman = 0;
+            PlayedComp = 0;
+            strComp = "Computer played :" + PlayedComp + " ";
+            strHuman = "Human played :" + PlayedHuman + " ";
+            document.getElementById("DivCompplayed").innerHTML = strComp;
+            document.getElementById("DivHumanplayed").innerHTML = strHuman;
+            str = "<table>";
+            for (var i = 0; i < height; i++) {
+                str += "<tr>";
+                for (var j = 0; j < width; j++) {
+                    str += "<td id='" + counter + "' onclick=CheckShip(id)></td > ";
+                    counter++;
+                }
+                str += "</tr>";
+            }
+            str += "</table>"
+            document.getElementById("ph").innerHTML = str;
+
+
+            for (var i = 0; i < submarinesArr.length; i++) {
+                for (var j = 0; j < submarinesArr[i].amount; j++) {
+                    rand = Math.floor(Math.random() * TotdalTd) + 1;
+                    hOrw = Math.floor(Math.random() * 2);
+                    Nums = [];
+                    Colum = 0;
+                    Row = 0;
+                    size = submarinesArr[i].size;
+                    if (hOrw == 1) {
+                        Row = Math.ceil(rand / width);
+                        Colum = (Row * width - rand) + 1
+
+                        while (size > Colum) {
+                            rand = Math.floor(Math.random() * TotdalTd) + 1;
+                            Row = Math.ceil(rand / width);
+                            Colum = (Row * width - rand) + 1
+                        }
+
+                        for (var m = 0; m < submarinesArr[i].size; m++) {
+                            document.getElementById(rand).style.backgroundColor = "black";
+                            Nums[Nums.length] = rand;
+                            rand++;
+                        }
+                    }
+                    else {
+                        Row = Math.ceil(rand / height);
+                        while (width - Row + 1 < size) {
+                            rand = Math.floor(Math.random() * TotdalTd) + 1;
+                            Row = Math.ceil(rand / height);
+                        }
+                        for (var m = 0; m < submarinesArr[i].size; m++) {
+                            document.getElementById(rand).style.backgroundColor = "black";
+                            Nums[Nums.length] = rand;
+                            rand += width;
+                        }
+                    }
+                    allships[allships.length] = Nums;
+                }
+            }
+            console.log(allships);
+        }
+        function CompBoard() {
+            allshipsComp = [];
+            allredShipsComp = [];
+            height = Number(document.getElementById("HeightTxt").value);
+            width = Number(document.getElementById("WidhtTxt").value);
+            TotdalTd = height * width;
+            str = "<table>";
+            for (var i = 0; i < height; i++) {
+                str += "<tr>";
+                for (var j = 0; j < width; j++) {
+                    str += "<td id='" + counter + "' onclick=CheckShipComp(id)></td > ";
+                    counter++;
+                }
+                str += "</tr>";
+            }
+            str += "</table>"
+            document.getElementById("ph2").innerHTML = str;
+
+
+            for (var i = 0; i < submarinesArr.length; i++) {
+                for (var j = 0; j < submarinesArr[i].amount; j++) {
+                    rand = Math.floor(Math.random() * TotdalTd) + (height * width + 1);
+                    hOrw = Math.floor(Math.random() * 2);
+                    Nums = [];
+                    Colum = 0;
+                    Row = 0;
+                    size = submarinesArr[i].size;
+                    if (hOrw == 1) {
+                        Row = Math.ceil((rand - (height * width)) / width);
+                        Colum = (Row * width - (rand - (width * height)) + 1);
+                        while (size > Colum) {
+                            rand = Math.floor(Math.random() * TotdalTd) + (height * width + 1);
+                            Row = Math.ceil((rand - (height * width)) / width);
+                            Colum = (Row * width - (rand - (width * height)) + 1);
+                        }
+
+                        for (var m = 0; m < submarinesArr[i].size; m++) {
+                            Nums[Nums.length] = rand;
+                            rand++;
+                        }
+                    }
+                    else {
+                        Row = Math.ceil(rand / height) - height;
+                        while (width - Row + 1 < size) {
+                            rand = Math.floor(Math.random() * TotdalTd) + (height * width + 1);
+                            Row = Math.ceil(rand / height) - height;
+                        }
+                        for (var m = 0; m < submarinesArr[i].size; m++) {
+                            Nums[Nums.length] = rand;
+                            rand += width;
+                        }
+                    }
+                    allshipsComp[allshipsComp.length] = Nums;
+                }
+            }
+            console.log(allshipsComp);
+
+        }
+        function CheckShipComp(idInput) {
+            counter = 0;
+            PlayedHuman++;
+            strHuman = "Human played :" + PlayedHuman + " ";
+            document.getElementById("DivHumanplayed").innerHTML = strHuman;
+
+            for (var i = 0; i < allshipsComp.length; i++) {
+                for (var j = 0; j < allshipsComp[i].length; j++) {
+                    if (allshipsComp[i][j] == idInput) {
+                        allredShips[allredShips.length] = idInput;
+                        document.getElementById(idInput).style.backgroundColor = "red";
+
+                        for (var q = 0; q < allshipsComp[i].length; q++) {
+                            for (var w = 0; w < allredShips.length; w++) {
+                                if (allshipsComp[i][q] == allredShips[w]) {
+                                    counter++;
+                                    if (counter == allshipsComp[i].length) {
+                                        alert("Ship has been destroyed")
+                                    }
+                                }
+                            }
+                        }
+                        setTimeout(() => { CheckShip(Math.floor(Math.random() * TotdalTd) + 1); }, 500);;
+                        return;
+                    }
+                }
+            }
+            document.getElementById(idInput).style.backgroundColor = "Grey";
+            setTimeout(() => { CheckShip(Math.floor(Math.random() * TotdalTd) + 1); }, 500);;
+        }
+        function Cheat() {
+            for (var i = 0; i < allshipsComp.length; i++) {
+                for (var j = 0; j < allshipsComp[i].length; j++) {
+                    document.getElementById(allshipsComp[i][j]).style.backgroundColor = "black";
+                }
+            }
+
+        }
+
+    </script>
+</body>
+</html>
